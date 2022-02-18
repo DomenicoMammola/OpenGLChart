@@ -936,25 +936,34 @@ var
         break;
     end;
 
-    n1 := TransformedNormals[fni1];
-    if n1.y > 0 then begin
-      n1 := n1*(-1);
-      if odd(fni1) then dec(fni1) else inc(fni1);
+    if fni1 <> -1 then
+    begin
+      n1 := TransformedNormals[fni1];
+      if n1.y > 0 then begin
+        n1 := n1*(-1);
+        if odd(fni1) then dec(fni1) else inc(fni1);
+      end;
     end;
 
-    n2 := TransformedNormals[fni2];
-    if n2.y > 0 then begin
-      n2 := n2*(-1);
-      if odd(fni2) then dec(fni2) else inc(fni2);
+    if fni2 <> -1 then
+    begin
+      n2 := TransformedNormals[fni2];
+      if n2.y > 0 then begin
+        n2 := n2*(-1);
+        if odd(fni2) then dec(fni2) else inc(fni2);
+      end;
     end;
 
     screenNormal := Vector3f(0, 1, 0);
-    if Dot(n1, screenNormal) > Dot(n2, screenNormal) then begin
-      AFaceNormal := QUAD_FACE_NORMALS[fni1];
-      AOtherFaceNormal := QUAD_FACE_NORMALS[fni2];
-    end else begin
-      AFaceNormal := QUAD_FACE_NORMALS[fni2];
-      AOtherFaceNormal := QUAD_FACE_NORMALS[fni1];
+    if (fni1 <> -1) and (fni2 <> -1) then
+    begin
+      if Dot(n1, screenNormal) > Dot(n2, screenNormal) then begin
+        AFaceNormal := QUAD_FACE_NORMALS[fni1];
+        AOtherFaceNormal := QUAD_FACE_NORMALS[fni2];
+      end else begin
+        AFaceNormal := QUAD_FACE_NORMALS[fni2];
+        AOtherFaceNormal := QUAD_FACE_NORMALS[fni1];
+      end;
     end;
   end;
 
@@ -1062,9 +1071,12 @@ begin
   FindWritingFace(akY, y1, y2, faceY1, faceY2);
   FindWritingFace(akZ, z1, z2, faceZ1, faceZ2);
 
-  FXAxis.InitParams(x1, x2, CalcAxisPosition(x1, x2), faceX1, faceX2);
-  FYAxis.InitParams(y1, y2, CalcAxisPosition(y1, y2), faceY1, faceY2);
-  FZAxis.InitParams(z1, z2, CalcAxisPosition(z1, z2), faceZ1, faceZ2);
+  if (x1 <> - 1) and (x2 <> -1) then
+    FXAxis.InitParams(x1, x2, CalcAxisPosition(x1, x2), faceX1, faceX2);
+  if (y1 <> -1) and (y2 <> -1) then
+    FYAxis.InitParams(y1, y2, CalcAxisPosition(y1, y2), faceY1, faceY2);
+  if (z1 <> -1) and (z2 <> -1) then
+    FZAxis.InitParams(z1, z2, CalcAxisPosition(z1, z2), faceZ1, faceZ2);
 
   WriteLn('Writing faces x axis: (',faceX1.x:0:0,',',faceX1.y:0:0,',',faceX1.z:0:0,'); (',faceX2.x:0:0,',',faceX2.y:0:0,',',faceX2.z:0:0);
   WriteLn('Writing faces y axis: (',faceY1.x:0:0,',',faceY1.y:0:0,',',faceY1.z:0:0,'); (',faceY2.x:0:0,',',faceY2.y:0:0,',',faceY2.z:0:0);
